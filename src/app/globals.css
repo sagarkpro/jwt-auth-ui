@@ -3,19 +3,40 @@
 @tailwind utilities;
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --background: #0a0a0a;
+  --foreground: #ededed;
+  /* --tw-shadow-color: #ededed; */
 }
 
 body {
   color: var(--foreground);
   background: var(--background);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+.link {
+  color: #3b82f6; /* Equivalent to text-blue-500 */
+}
+
+.link:hover {
+  color: #1e40af; /* Equivalent to hover:text-blue-700 */
+}
+
+.link:focus {
+  color: #1e3a8a; /* Equivalent to focus:text-blue-900 */
+}
+
+
+.rotate {
+  animation: rotateAnimation 10s linear infinite;
+}
+
+@keyframes rotateAnimation {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
 }

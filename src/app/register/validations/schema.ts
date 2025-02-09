@@ -1,4 +1,4 @@
-import { RegisterReq } from "@/app/models/RegisterReq";
+import { UserDto } from "@/app/models/RegisterReq";
 import { z } from "zod";
 
 export const registrationSchema = z.object({
@@ -7,6 +7,6 @@ export const registrationSchema = z.object({
   firstName: z.string().nonempty("Please enter your name"),
 })
 
-export function validateRegistration(data: RegisterReq){
+export function validateRegistration(data: UserDto){
   return registrationSchema.safeParse(data);
 }

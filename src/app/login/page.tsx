@@ -5,6 +5,7 @@ import { LoginReq } from '../models/LoginReq'
 import { validateLogin } from './validations/schema';
 import { FaCopy, FaEye, FaEyeSlash } from 'react-icons/fa';
 import { ZodFormattedError } from 'zod';
+import { setAuthToken } from '@/app/utils/Common';
 
 export default function Login() {
   const [loginReq, setLoginReq] = useState<LoginReq>(new LoginReq());
@@ -47,6 +48,8 @@ export default function Login() {
         success: "Succesfully logged in",
         token: body.token
       });
+
+      setAuthToken(body.token);
     }
     else {
       setApiRes({
@@ -124,6 +127,8 @@ export default function Login() {
               <p className='break-words max-w-full'>
                 {apiRes.token}
               </p>
+
+              <a href="/user-management" className='link text-center p-4'>User Management</a>
             </div>
           }
         </div>

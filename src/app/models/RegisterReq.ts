@@ -1,6 +1,6 @@
 import { LoginReq } from "./LoginReq";
 
-export class RegisterReq extends LoginReq{
+export class UserDto extends LoginReq{
   firstName: string;
   lastName: string;
   role: Role;

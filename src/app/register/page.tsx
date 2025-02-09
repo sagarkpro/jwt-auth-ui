@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
-import { RegisterReq } from '../models/RegisterReq';
+import { UserDto } from '../models/RegisterReq';
 import { validateRegistration } from './validations/schema';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import { ZodFormattedError } from 'zod';
@@ -9,7 +9,7 @@ import { useRouter } from 'next/navigation';
 
 export default function Register() {
   const router = useRouter();
-  const [registerReq, setRegisterReq] = useState<RegisterReq>(new RegisterReq());
+  const [registerReq, setRegisterReq] = useState<UserDto>(new UserDto());
   const [apiRes, setApiRes] = useState<{success?: string, error?: string}>();
   const [errors, setErrors] = useState<ZodFormattedError<{
     email: string;
@@ -19,14 +19,14 @@ export default function Register() {
   const [passwordVisible, setPasswordVisible] = useState<boolean>(false);
 
   function changeHandler(value: string, key: "email" | "password" | "firstName" | "lastName") {
-    const updatedReq: RegisterReq = JSON.parse(JSON.stringify(registerReq));
+    const updatedReq: UserDto = JSON.parse(JSON.stringify(registerReq));
     updatedReq[key] = value;
     setRegisterReq(updatedReq);
     validate(updatedReq);
     console.log(registerReq.password);
   }
 
-  function validate(updatedReq?: RegisterReq) {
+  function validate(updatedReq?: UserDto) {
     const res = validateRegistration(updatedReq ?? registerReq);
     setErrors(res.error?.format());
     return res.success;
@@ -112,7 +112,7 @@ export default function Register() {
 
       {
         apiRes &&
-        <div className='mt-6 w-full max-w-[400px] shadow-[0_0px_10px] bg-slate-950 shadow-rose-500 rounded-xl p-6 flex flex-col items-center text-rose-500 font-medium text-xl'>
+        <div className='mt-6 w-full max-w-[450px] shadow-[0_0px_10px] bg-slate-950 shadow-rose-500 rounded-xl p-6 flex flex-col items-center text-rose-500 font-medium text-xl'>
           <p className='break-words max-w-full'>
             {apiRes?.success ?? apiRes?.error}
           </p>

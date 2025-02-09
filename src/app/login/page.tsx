@@ -2,68 +2,33 @@
 
 import React, { useState } from 'react'
 import { LoginReq } from '../models/LoginReq'
-import { ValidationError } from '../models/ValidationError';
+import { validateLogin } from './validations/schema';
+import { FaCopy, FaEye, FaEyeSlash } from 'react-icons/fa';
+import { ZodFormattedError } from 'zod';
 
 export default function Login() {
-  const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-  const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/;
   const [loginReq, setLoginReq] = useState<LoginReq>(new LoginReq());
-  const [token, setToken] = useState("");
-  const [errors, setErrors] = useState<ValidationError[]>([
-    new ValidationError("email", ""),
-    new ValidationError("password", "")
-  ])
+  const [apiRes, setApiRes] = useState<{ success?: string, token?: string, error?: string }>();
+  const [clipboardMessage, setClipboardMessage] = useState<string>("");
+  const [showToaster, setShowToaster] = useState<boolean>(false);
+  const [errors, setErrors] = useState<ZodFormattedError<{
+    email: string;
+    password: string;
+  }, string>>();
+  const [passwordVisible, setPasswordVisible] = useState<boolean>(false);
 
   function changeHandler(value: string, key: "email" | "password") {
-    if (key == 'email') {
-      setLoginReq((prev) => ({
-        ...prev, email: value
-      }));
-    }
-    else if (key == 'password') {
-      setLoginReq((prev) => ({
-        ...prev, password: value
-      }));
-    }
+    const updatedReq: LoginReq = JSON.parse(JSON.stringify(loginReq));
+    updatedReq[key] = value;
+    setLoginReq(updatedReq);
+    validate(updatedReq);
   }
 
-  function validate() {
-    let isValid = true;
-    const updatedErrors: ValidationError[] = JSON.parse(JSON.stringify(errors));
-
-    if (!loginReq.email) {
-      isValid = false;
-      updatedErrors[0].error = "Email is required.";
-      setErrors(updatedErrors);
-    } 
-    else if (!emailRegex.test(loginReq.email)) {
-      isValid = false;
-      updatedErrors[0].error = "Invalid Email.";
-      setErrors(updatedErrors);
-    }
-    else{
-      updatedErrors[0].error = "";
-      setErrors(updatedErrors);
-    }
-
-    if (!loginReq.password) {
-      isValid = false;
-      updatedErrors[1].error = "Password is Required.";
-      setErrors(updatedErrors);
-    } 
-    else if (!passwordRegex.test(loginReq.password)) {
-      isValid = false;
-      updatedErrors[1].error = "Password must be at least 8 characters with an uppercase, number, and special character.";
-      setErrors(updatedErrors);
-    }
-    else{
-      updatedErrors[1].error = "";
-      setErrors(updatedErrors);
-    }
-
-    console.log(updatedErrors);
-
-    return isValid;
+  function validate(updatedReq?: LoginReq) {
+    const res = validateLogin(updatedReq ?? loginReq);
+    setErrors(res.error?.format());
+    console.log(res.error?.format());
+    return res.success;
   }
 
 
@@ -76,15 +41,40 @@ export default function Login() {
       method: 'POST'
     });
 
-    const body = await res.json()
-    console.log(body);
-    setToken(body?.token || body?.error || body?.errors || body?.message);
-    localStorage.setItem("token", body?.token);
-    return body?.token || body?.error || body?.errors || body?.message;
+    const body = await res.json() ?? undefined;
+    if (body?.token) {
+      setApiRes({
+        success: "Succesfully logged in",
+        token: body.token
+      });
+    }
+    else {
+      setApiRes({
+        error: body?.error ?? "Something went wrong );"
+      });
+    }
+  }
+
+  function copyToClipboard(value: string) {
+    navigator.clipboard.writeText(value);
+    setClipboardMessage("Copied!");
+    setShowToaster(true);
+    setTimeout(() => { setShowToaster(false) }, 2000);
+  }
+
+  function makeVisible(): void {
+    setPasswordVisible(!passwordVisible);
   }
 
   return (
     <div className='flex flex-col justify-center w-full h-svh items-center'>
+
+      <div className={`absolute top-8 right-8 opacity-0 transition-opacity duration-400 ${showToaster && "opacity-100"}`}>
+        <div className='bg-slate-950 shadow-[0_0px_10px] shadow-rose-500 rounded-xl p-6 flex flex-col items-center text-rose-500 font-medium text-xl'>
+          {clipboardMessage}
+        </div>
+      </div>
+
       <div className='w-full max-w-[400px] shadow-[0_0px_10px] bg-slate-950 shadow-rose-500 rounded-xl p-6 flex flex-col items-center'
         onKeyDown={(e) => {
           if (e.key == "Enter")
@@ -95,15 +85,22 @@ export default function Login() {
           <label htmlFor="email" className='text-lg mt-2'>Email</label>
           <input type="email" id="email" placeholder='Email'
             onChange={(e) => changeHandler(e.target.value, 'email')} className='w-full my-2 p-2 bg-white text-black rounded-lg focus:border-none focus:outline-none' />
-          <p className='text-red-500 mb-2'>{errors[0].error}</p>
+          <p className='text-red-500 mb-2'>{errors?.email?._errors?.[0]}</p>
         </div>
 
         <div className='w-full'>
           <label htmlFor="password" className='text-left text-lg w-full mt-2'>Password</label>
-          <input type="password" id="password" placeholder='Password'
+          <input type={passwordVisible ? "text" : "password"} id="password" placeholder='Password'
             onChange={(e) => changeHandler(e.target.value, 'password')}
             className='w-full my-2 p-2 bg-white text-black rounded-lg focus:border-none focus:outline-none' />
-          {errors[1].error && <p className='text-red-500 mb-2'>{errors[1].error}</p>}
+          <div className='w-full flex justify-end text-lg text-black -mt-11 p-2'>
+            <div onClick={makeVisible} className='hover:cursor-pointer'>
+              {
+                passwordVisible ? <FaEye /> : <FaEyeSlash />
+              }
+            </div>
+          </div>
+          <p className='text-red-500 my-2'>{errors?.password?._errors?.[0]}</p>
         </div>
 
         <button onClick={login} className='bg-rose-500 font-medium w-full my-2 p-2 rounded-lg hover:bg-rose-400'>LOGIN</button>
@@ -112,11 +109,23 @@ export default function Login() {
 
 
       {
-        token &&
+        apiRes &&
         <div className='mt-6 w-full max-w-[400px] shadow-[0_0px_10px] bg-slate-950 shadow-rose-500 rounded-xl p-6 flex flex-col items-center text-rose-500 font-medium text-xl'>
           <p className='break-words max-w-full'>
-            {token}
+            {apiRes.success ?? apiRes.error}
           </p>
+
+          {
+            apiRes.token &&
+            <div className="w-full flex flex-col" onClick={() => copyToClipboard(apiRes.token || "")}>
+              <div className='w-24 flex items-center'>
+                Token: <div className='px-2 hover:cursor-pointer'><FaCopy /></div>
+              </div>
+              <p className='break-words max-w-full'>
+                {apiRes.token}
+              </p>
+            </div>
+          }
         </div>
       }
     </div>

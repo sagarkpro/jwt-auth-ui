@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { Roboto } from 'next/font/google';
 import "./globals.css";
 
-
 export const metadata: Metadata = {
   title: "JWT Auth",
   description: "Shadow Pass: A secret pass (JWT) that operates in the shadows to grant access.",

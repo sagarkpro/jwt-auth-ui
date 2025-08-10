@@ -1,8 +1,49 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🔐 Login & Registration UI Starter
 
-## Getting Started
+A **Next.js 15** and **Tailwind CSS** starter template for building secure applications.  
+Includes ready-to-use **Login** and **Registration** screens that connect to your backend authentication service.
 
-First, run the development server:
+> ⚡ Designed to help you quickly bootstrap any project with authentication as the first step.
+
+---
+
+## ✨ Features
+
+- **Login Screen** – Clean and responsive design for user authentication.
+- **Registration Screen** – Simple form to create new user accounts.
+- **Next.js 15 + Tailwind CSS** – Fast, modern, and fully customizable.
+- **Validation using Zod** – Form Validations using Zod.
+- **Backend Ready** – Communicates with your **Spring Boot** backend for authentication.
+- **Starter Template** – Easily extendable for any secure app.
+
+## 📸 Screenshots
+
+**Login**
+![Login Screenshot](./screenshots/login.png)
+
+**Register**
+![Register Screenshot](./screenshots/register.png)
+
+**Validations**
+![Validations Screenshot](./screenshots/validations.png)
+
+---
+
+## 🚀 Getting Started
+
+First, install dependencies:
+
+```bash
+npm install
+# or
+yarn install
+# or
+pnpm install
+# or
+bun install
+```
+
+Run the development server:
 
 ```bash
 npm run dev
@@ -14,23 +55,40 @@ pnpm dev
 bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) in your browser to see it live.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 📂 Project Structure
 
-## Learn More
+- `app/login/page.tsx` – Login page UI.
+- `app/register/page.tsx` – Registration page UI.
+- `components/` – Reusable form components and input fields.
+- `styles/` – Tailwind styling.
 
-To learn more about Next.js, take a look at the following resources:
+---
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## ⚙️ Backend Integration
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+This template is built to communicate with a **Spring Boot backend** that handles authentication logic.  
+Update the API endpoint URLs inside the project to match your backend.
 
-## Deploy on Vercel
+Example API endpoints expected:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- `POST /auth/login`
+- `POST /auth/register`
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+---
+
+## 📚 Learn More
+
+- [Next.js Documentation](https://nextjs.org/docs) – Learn about Next.js features and API.
+- [Tailwind CSS Docs](https://tailwindcss.com/docs) – Explore styling utilities.
+
+---
+
+## ☁ Deployment
+
+You can deploy easily on [Vercel](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app).
+
+For more options, see the [Next.js deployment docs](https://nextjs.org/docs/app/building-your-application/deploying).

@@ -73,11 +73,6 @@ Open [http://localhost:3000](http://localhost:3000) in your browser to see it li
 This template is built to communicate with a **Spring Boot backend** that handles authentication logic.  
 Update the API endpoint URLs inside the project to match your backend.
 
-Example API endpoints expected:
-
-- `POST /auth/login`
-- `POST /auth/register`
-
 ---
 
 ## 📚 Learn More
